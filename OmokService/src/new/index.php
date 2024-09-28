@@ -10,7 +10,7 @@ if ($strat_exists) {
     $type_strat_exists = in_array($strategy, $strategies);
     if ($type_strat_exists){
         $pid = uniqid();
-        $response = array("response"=>$type_strat_exists, "strategy"=>$strategy);
+        $response = array("response"=>$type_strat_exists, "pid"=>$pid);
     } else {
         $response = array("response"=>$type_strat_exists, "reason"=>"Unknown strategy");
     }
