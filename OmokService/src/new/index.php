@@ -1,38 +1,21 @@
 <?php // index.php
-define('STRATEGY', 'strategy'); // constant
-$strategies = ["Smart", "Random"]; // supported strategies
+define('STRATEGY','strategy');
+$strategies=["smart", "random"];
+$strat_exists=array_key_exists(STRATEGY, $_GET);
 
-// checking if there is even a response
-if (!array_key_exists(STRATEGY, $_GET)){
-    /* write code here */
-    echo '{"response": false, "reason": "Strategy not specified"}';
-    exit; 
 
+if ($strat_exists) {
+    $strategy_raw = $_GET[STRATEGY];
+    $strategy = strtolower($strategy_raw);
+    $type_strat_exists = in_array($strategy, $strategies);
+    if ($type_strat_exists){
+        $pid = uniqid();
+        $response = array("response"=>$type_strat_exists, "strategy"=>$strategy);
+    } else {
+        $response = array("response"=>$type_strat_exists, "reason"=>"Unknown strategy");
+    }
+} else {
+    $response = array("response"=> $strat_exists, "reason"=>"Strategy not specified");
 }
-$strategy = $_GET[STRATEGY];
-
-// write your code here … use uniqid() to create a unique play id.
-
-//checks if the strategy is not in the array
-if(!in_array($strategy,$strategies)){
-    echo '{"response": false, "reason": "Unknown strategy"}';
-    exit;
-}
-// checks if the response is Smart
-
-if($strategy == 'Smart'){
-    $pid = uniqid(); // creating unique player ID
-    echo '{"response": true, "strategy": "Smart"}';
-}
-
-
-//checks if the response is Random
-
-if($strategy == 'Random'){
-    $pid = uniqid(); // creating unique player ID
-    echo '{"response": true, "strategy": "Random"}';
-}
-
-
-
+echo json_encode($response, JSON_PRETTY_PRINT);
 ?>
