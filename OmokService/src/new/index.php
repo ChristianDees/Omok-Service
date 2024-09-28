@@ -2,7 +2,7 @@
 define('STRATEGY','strategy');
 $strategies=["smart", "random"];
 $strat_exists=array_key_exists(STRATEGY, $_GET);
-
+$pids = array();
 
 if ($strat_exists) {
     $strategy_raw = $_GET[STRATEGY];
@@ -10,6 +10,7 @@ if ($strat_exists) {
     $type_strat_exists = in_array($strategy, $strategies);
     if ($type_strat_exists){
         $pid = uniqid();
+        $pids[] = $pid;
         $response = array("response"=>$type_strat_exists, "pid"=>$pid);
     } else {
         $response = array("response"=>$type_strat_exists, "reason"=>"Unknown strategy");
