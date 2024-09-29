@@ -27,6 +27,8 @@ if ($pid_entered) {
             if ($y_entered) {
                 $won = false; // CHANGE THIS
                 $isDraw = false; // CHANGE THIS
+                // check if coordinate is available, if so add it
+               
                 $ack_move_arr = array("x"=>$input[XCORD], "y"=>$input[YCORD], "isWin"=>$won, "isDraw"=>$isDraw, "row"=>array());
                 // CHANGE COORDS
                 $move_arr = array("x"=>0, "y"=>0, "isWin"=>$won, "isDraw"=>$isDraw, "row"=>array());
