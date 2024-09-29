@@ -26,9 +26,6 @@ class RandomStrategy extends MoveStrategy{
         }
         // if still empty spots, it returns a random value from the emptySpot array
         return $emptySpots[array_rand($emptySpots)];
-        
-        
     }
-    
 }
 ?>

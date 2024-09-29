@@ -1,21 +1,41 @@
 <?php
-class Game{
 
+class Game {
     public $board;
     public $strategy;
 
-    function __construct(){
-        $this->board = new Board(2);
-        // change based on user input
-        $this->strategy = new RandomStrategy($this->board);
+    static function fromJson($json) {
+        $obj = json_decode($json); 
+
+        $boardData = $obj->{'board'};
+        $strategyJson = $obj->{'strategy'};
+
+        $game = new Game();
+        $game->board = Board::fromJson($boardData); 
+
+        
+        $game->strategy = MoveStrategy::fromJson($strategyJson, $game->board);
+        
+        return $game;
     }
 
-    function check_win(){
-        // check if five peices in a row
+    function toJson() {
+        return json_encode([
+            'board' => $this->board->toJson(),
+            'strategy' => $this->strategy->toJson()
+        ]);
+    }
+
+    function check_win() {
+        // Check if five pieces in a row
+        return false;
     }
 
     function check_draw() {
-        // check if draw occured (all peices filled and no one has won)
+        // Check if draw occurred (all pieces filled and no one has won)
+        return false;
     }
 }
+
+
 ?>
