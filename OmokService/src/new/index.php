@@ -42,7 +42,7 @@ if ($strat_entered) {
         $game->strategy = new $strategy($game->board);
         
         // store game & append to list of pids
-        file_put_contents($game_file, $game->toJson());
+        file_put_contents($game_file, $game->to_json());
         file_put_contents(PIDS_FILE, json_encode($pids, JSON_PRETTY_PRINT));
         $response = array("response" => true, "pid" => $pid);
         

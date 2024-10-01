@@ -13,11 +13,11 @@ class Piece {
         $reason = null;
         $cord = null;
         // check if x is valid
-        if ($this->board->isOutOfBounds($x)) {
+        if ($this->board->is_oob($x)) {
             $reason = 'x';
             $cord = $x;
         // check if y is valid
-        } else if ($this->board->isOutOfBounds($y)) {
+        } else if ($this->board->is_oob($y)) {
             $reason = 'y';
             $cord = $y;
         }
@@ -25,8 +25,8 @@ class Piece {
             return array("response" => false, "reason" => "Invalid $reason coordinate, " . $cord);
         }
         // place if cords are available
-        else if ($this->board->isEmpty($x, $y)) {
-            $this->board->arrayBoard[$x][$y] = $this->piece_type;
+        else if ($this->board->is_empty($x, $y)) {
+            $this->board->array_board[$x][$y] = $this->piece_type;
         } else {
             return array("response" => false, "reason" => "Place not empty, ($x, $y)");
         }

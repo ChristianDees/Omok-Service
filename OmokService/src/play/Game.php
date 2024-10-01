@@ -4,30 +4,30 @@ class Game {
     public $board;
     public $strategy;
     
-    
-    static function fromJson($json) {
+
+    static function from_json($json) {
         $obj = json_decode($json); 
-        $boardData = $obj->{'board'};
-        $strategyJson = $obj->{'strategy'};
+        $board_data = $obj->{'board'};
+        $strategy_json = $obj->{'strategy'};
         $game = new Game();
-        $game->board = Board::fromJson($boardData); 
-        $game->strategy = MoveStrategy::fromJson($strategyJson, $game->board);
+        $game->board = Board::from_json($board_data); 
+        $game->strategy = MoveStrategy::from_json($strategy_json, $game->board);
         return $game;
     }
 
-    function toJson() {
+    function to_json() {
         return json_encode([
-            'board' => $this->board->toJson(),
-            'strategy' => $this->strategy->toJson()
+            'board' => $this->board->to_json(),
+            'strategy' => $this->strategy->to_json()
         ]);
     }
 
-    function check_win() {
+    function is_win() {
         // Check if five pieces in a row
         return false;
     }
 
-    function check_draw() {
+    function is_draw() {
         // Check if draw occurred (all pieces filled and no one has won)
         return false;
     }

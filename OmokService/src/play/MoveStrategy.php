@@ -6,18 +6,18 @@ abstract class MoveStrategy {
         $this->board = $board;
     }
 
-    abstract function pickPlace();
+    abstract function pick_place();
 
-    function toJson() {
+    function to_json() {
         return json_encode(['name' => get_class($this)]);
     }
 
-    static function fromJson($json, Board $board) {
+    static function from_json($json, Board $board) {
         $data = json_decode($json, true); 
-        $strategyClassName = $data['name'];
+        $strat_class = $data['name'];
         // return new strat obj of type strat
-        if (class_exists($strategyClassName)) {
-            return new $strategyClassName($board); 
+        if (class_exists($strat_class)) {
+            return new $strat_class($board); 
         }
     }
 }

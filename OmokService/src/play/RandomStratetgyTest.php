@@ -12,7 +12,7 @@ $strategy = new RandomStrategy($board);
 
 // Test the pickPlace method
 for ($i = 0; $i < 4; $i++) {
-    $place = $strategy->pickPlace();
+    $place = $strategy->pick_place();
     if ($place !== null) {
         echo "Selected place: (" . $place[0] . ", " . $place[1] . ")\n";
     }

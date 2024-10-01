@@ -33,7 +33,7 @@ if ($pid_entered) {
                 // load game
                 $game_file = GAMES_DIR . $pid . '.json';
                 $json = file_get_contents($game_file);
-                $game = Game::fromJson($json);
+                $game = Game::from_json($json);
                 // create new pieces each turn
                 $sys_piece = new Piece(1, $game->board);
                 $usr_piece = new Piece(2, $game->board);
@@ -41,14 +41,14 @@ if ($pid_entered) {
                 $response = $usr_piece->place($input[XCORD], $input[YCORD]);
                 if (!$response){
                     // system's move
-                    $sys_cords = $game->strategy->pickPlace();
+                    $sys_cords = $game->strategy->pick_place();
                     if ($sys_cords) {
                         $sys_piece->place($sys_cords[0], $sys_cords[1]);
                         // win/draw check
-                        $won = $game->check_win(); 
-                        $isDraw = $game->check_draw(); 
+                        $won = $game->is_win(); 
+                        $draw = $game->is_draw(); 
                         // remove pid once game is won or draw
-                        if ($won || $isDraw) {
+                        if ($won || $draw) {
                             unset($array[array_search($pid,$pids)]);
                         }
                         // responses
@@ -58,19 +58,19 @@ if ($pid_entered) {
                                 "x" => $input[XCORD],
                                 "y" => $input[YCORD],
                                 "isWin" => $won,
-                                "isDraw" => $isDraw,
+                                "isDraw" => $draw,
                                 "row" => array() // UPDATE WITH STRAT LOGIC
                             ],
                             "move" => [
                                 "x" => $sys_cords[0],
                                 "y" => $sys_cords[1],
                                 "isWin" => $won,
-                                "isDraw" => $isDraw,
+                                "isDraw" => $draw,
                                 "row" => array() // UPDATE WITH STRAT LOGIC 
                             ]
                         ];
                         // save game state
-                        file_put_contents($game_file, $game->toJson());
+                        file_put_contents($game_file, $game->to_json());
                     } else {
                         return array("response" => false, "reason" => "There are no more empty spots left on the board.");
                     }
