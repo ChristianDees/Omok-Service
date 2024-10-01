@@ -1,2 +1,2 @@
-/writable/*
+/writable/*.json
 RandomStrategyTest.php
