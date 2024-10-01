@@ -22,10 +22,10 @@ class SmartStrategy extends MoveStrategy{
             return $block_place;
         }
         
-        // if neither, random spot is chosen
+        // if neither, plays offense
         
-        $emptySpots = $board->find_empty_spots();
-        return $emptySpots[array_rand($emptySpots)];
+        $offense_place = $this->play_smart();
+        return $offense_place;
 
         
 
@@ -100,9 +100,37 @@ class SmartStrategy extends MoveStrategy{
         
     }
     
-    //function play_smart(){
+    function play_smart(){
+        $board = $this->board;
+        $size = $board->get_size();
+    
+    
+        for($x=0; $x<$size; $x++){
+            for($y=0;$y< $size;$y++){
+                
+                //CHECK OPEN SPACE HORIZONTALLY
+                
+                // check if there is an open left side
+                if($x>0 && $board->array_board[$x-1][$y] == 0){
+                    return [$x-1,$y];
+                }
+                // check if there is an open right side
+                if($x+1 < $size && $board->array_board[$x+1][$y]==0){
+                    return [$x+1,$y];
+                }
+                //CHECK OPEN SPACE VERTICALLY
+                if($y>0 && $board->array_board[$x][$y-1] == 0){
+                    return [$x,$y-1];
+                }
+                if($y+1 < $size && $board->array_board[$x][$y+1] == 0){
+                    return [$x,$y+1];
+                }
+                
+            }
+        }
+
         
-    //}
+    }
     
 }
 ?>
