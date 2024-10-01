@@ -3,19 +3,15 @@
 class Game {
     public $board;
     public $strategy;
-
+    
+    
     static function fromJson($json) {
         $obj = json_decode($json); 
-
         $boardData = $obj->{'board'};
         $strategyJson = $obj->{'strategy'};
-
         $game = new Game();
         $game->board = Board::fromJson($boardData); 
-
-        
         $game->strategy = MoveStrategy::fromJson($strategyJson, $game->board);
-        
         return $game;
     }
 
@@ -36,6 +32,4 @@ class Game {
         return false;
     }
 }
-
-
 ?>

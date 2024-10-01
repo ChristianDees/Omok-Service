@@ -14,7 +14,11 @@ class Board{
     }
     
     function isEmpty($x,$y){
-        return $this->arrayBoard[$x][$y] == 0;
+        return ($this->arrayBoard[$x][$y] == 0) && ($x >= 0 && $x < $this->size) && ($y >= 0 && $y < $this->size);
+    }
+
+    function isOutOfBounds($cord){
+        return ($cord >= $this->size) || ($cord < 0);
     }
 
     //helper method traverse through the array and note all the empty spots and return the array

@@ -21,7 +21,6 @@ class RandomStrategy extends MoveStrategy{
         $emptySpots = $board->findEmptySpots(); // makes an array of the empty spots
         
         if(empty($emptySpots)){ // checks if there are still empty spots
-            echo "There are no more empty spots left on the board.";
             return null;
         }
         // if still empty spots, it returns a random value from the emptySpot array
