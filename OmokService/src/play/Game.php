@@ -5,6 +5,7 @@ class Game {
     public $strategy;
     
 
+    // assign game info from json str
     static function from_json($json) {
         $obj = json_decode($json); 
         $board_data = $obj->{'board'};
@@ -15,6 +16,7 @@ class Game {
         return $game;
     }
 
+    // json encode game info
     function to_json() {
         return json_encode([
             'board' => $this->board->to_json(),
@@ -22,14 +24,20 @@ class Game {
         ]);
     }
 
-    function is_win() {
-        // Check if five pieces in a row
-        return false;
+    // return (player_type, winning row)
+    function win_info() {
+        // return array (player_type, winning row)
+        // Check if five pieces in a row 
+        //return [0, [1,2,3,4,5,6]];
+        
+        return array();
     }
 
-    function is_draw() {
+    // return (usr_winning_row, sys_winning_row)
+    function draw_info() {
         // Check if draw occurred (all pieces filled and no one has won)
-        return false;
+        // return array (usr_winning_row, sys_winning_row)
+        return array();
     }
 }
 ?>

@@ -14,10 +14,7 @@ define('YCORD', 'y');
 // grab url input
 $input = $_GET;
 $response = [];
-// DELETE 
-$game = null;
-// DELETE
-
+$game = null; //DELETE LATER
 $pid_entered = array_key_exists(PID, $input);
 if ($pid_entered) {
     // check pid existance
@@ -44,31 +41,45 @@ if ($pid_entered) {
                     $sys_cords = $game->strategy->pick_place();
                     if ($sys_cords) {
                         $sys_piece->place($sys_cords[0], $sys_cords[1]);
-                        // win/draw check
-                        $won = $game->is_win(); 
-                        $draw = $game->is_draw(); 
-                        // remove pid once game is won or draw
-                        if ($won || $draw) {
-                            unset($array[array_search($pid,$pids)]);
-                        }
-                        // responses
-                        $response = [
-                            "response" => true,
+                        // win/draw check & row assignment
+                        $draw_info = $game->draw_info();
+                        $win_info = $game->win_info(); 
+                        $winner = $win_info[0] ?? 0;
+                        $plyr_win_row = array();
+                        $sys_win_row =  array();
+                        $won = $win_info ? true:false;
+                        $draw = $draw_info ? true:false;
+                        if ($draw_info){
+                            $plyr_win_row = $draw_info[0];
+                            $sys_win_row = $draw_info[1];
+                        } else if ($winner == 1){
+                            $sys_win_row = $win_info[1]; 
+                        } else if ($winner == 2) {
+                            $plyr_win_row = $win_info[1];
+                        } 
+                        // setup responses
+                        $player_response = [
                             "ack_move" => [
-                                "x" => $input[XCORD],
-                                "y" => $input[YCORD],
-                                "isWin" => $won,
-                                "isDraw" => $draw,
-                                "row" => array() // UPDATE WITH STRAT LOGIC
-                            ],
-                            "move" => [
-                                "x" => $sys_cords[0],
-                                "y" => $sys_cords[1],
-                                "isWin" => $won,
-                                "isDraw" => $draw,
-                                "row" => array() // UPDATE WITH STRAT LOGIC 
+                            "x" => (int)$input[XCORD],
+                            "y" => (int)$input[YCORD],
+                            "isWin" => $won,
+                            "isDraw" => $draw,
+                            "row" => $plyr_win_row 
                             ]
                         ];
+                        $sys_response = [
+                            "move" => [
+                            "x" => (int)$sys_cords[0],
+                            "y" => (int)$sys_cords[1],
+                            "isWin" => $won,
+                            "isDraw" => $draw,
+                            "row" => $sys_win_row 
+                            ]
+                        ];
+                        // remove necesarry winners row from response
+                        $winner == 1 ? $player_response = null : ($winner == 2 ? $sys_response = null:null);
+                        // formulate final response 
+                        $response = array_merge(["response" => true], $player_response ?? [], $sys_response ?? []);
                         // save game state
                         file_put_contents($game_file, $game->to_json());
                     } else {
@@ -87,10 +98,9 @@ if ($pid_entered) {
 } else {
     $response = array("response" => $pid_entered, "reason" => "Pid not specified");
 }
-
-echo json_encode($response, JSON_PRETTY_PRINT);
-// DELETE THIS LATER,:
-if ($game !== null){
+echo json_encode($response);
+// DELETE THIS FOR SERVER
+if ($game){
     $game->board->display();
 }
 ?>

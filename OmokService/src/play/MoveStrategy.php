@@ -8,10 +8,12 @@ abstract class MoveStrategy {
 
     abstract function pick_place();
 
+    // encode in json the name of strat type
     function to_json() {
         return json_encode(['name' => get_class($this)]);
     }
 
+    // create new strat from json
     static function from_json($json, Board $board) {
         $data = json_decode($json, true); 
         $strat_class = $data['name'];
@@ -21,5 +23,4 @@ abstract class MoveStrategy {
         }
     }
 }
-
 ?>

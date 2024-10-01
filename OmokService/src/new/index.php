@@ -6,8 +6,11 @@ require_once "../play/SmartStrategy.php";
 require_once "../play/RandomStrategy.php";
 
 define('STRATEGY', 'strategy');                     
-define('GAMES_DIR', '../../../writable/');
-define('PIDS_FILE', '../../../writable/pids.json'); 
+define('GAMES_DIR', '../../../../writable/');
+define('PIDS_FILE', '../../../../writable/pids.json'); 
+// COMMENT TOP AND UNCOMMENT BOTTOM FOR SERVER, TOP IS FOR LOCAL
+//define('GAMES_DIR', '../writable/');
+//define('PIDS_FILE', '../writable/pids.json'); 
 $strategies = ["smart", "random"];
 
 // if stategy is entered
@@ -43,7 +46,7 @@ if ($strat_entered) {
         
         // store game & append to list of pids
         file_put_contents($game_file, $game->to_json());
-        file_put_contents(PIDS_FILE, json_encode($pids, JSON_PRETTY_PRINT));
+        file_put_contents(PIDS_FILE, json_encode($pids));
         $response = array("response" => true, "pid" => $pid);
         
     } else {
@@ -52,5 +55,5 @@ if ($strat_entered) {
 } else {
     $response = array("response" => false, "reason" => "Strategy not specified");
 }
-echo json_encode($response, JSON_PRETTY_PRINT);
+echo json_encode($response);
 ?>

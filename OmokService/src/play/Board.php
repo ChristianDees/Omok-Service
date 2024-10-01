@@ -51,13 +51,23 @@ class Board{
             echo "<tr>"; 
             echo "<td style='border: 1px solid black; padding: 10px; text-align: center;'>" . $x . "</td>"; 
             for ($y = 0; $y < $this->size; $y++) {
-                
-                echo "<td style='border: 1px solid black; padding: 10px; text-align: center;'>" . $this->array_board[$x][$y] . "</td>";
+                $value = $this->array_board[$x][$y];
+                $color = '';
+    
+                // Set the background color based on the value
+                if ($value == 1) {
+                    $color = 'background-color: lightcoral;';
+                } elseif ($value == 2) {
+                    $color = 'background-color: lightblue;';
+                }
+    
+                echo "<td style='border: 1px solid black; padding: 10px; text-align: center; $color'>" . $value . "</td>";
             }
             echo "</tr>"; 
         }
         echo "</table>"; 
     }
+    
     
 
     // board metadata to json
