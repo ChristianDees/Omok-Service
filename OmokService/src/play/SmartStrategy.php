@@ -90,7 +90,7 @@ class SmartStrategy extends MoveStrategy{
                         return [$x-3,$y+3];
                     }
                     //check if open end is on bottom-left corner of the diagonal row
-                    if($x + 1 < $size && $y-1 >= 0 && $board->array_board[$x+1][$y-1]){
+                    if($x + 1 < $size && $y-1 >= 0 && $board->array_board[$x+1][$y-1]==0){
                         return [$x+1,$y-1];
                     }
                 }
