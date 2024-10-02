@@ -13,7 +13,7 @@ class SmartStrategy extends MoveStrategy{
         for($x=0;$x<$size;$x++){
             for($y=0;$y<$size;$y++){
                 if ($board->array_board[$x][$y] === 1){
-                    $total_cords[] = array($x, $y);
+                    $total_cords[] = [$x, $y];
                 }
             }
         }
@@ -99,65 +99,73 @@ class SmartStrategy extends MoveStrategy{
         return null;
     }
 
-    // count total spots around for free
-    function count_around($x, $y){
+    // count total connected pieces
+    function count_connected($x, $y) {
         $count = 0;
         $board = $this->board;
-        $size = $this->board->get_size();
-        if($x>0 && $board->array_board[$x-1][$y] == 0){
-            $count+=1;
-        }
-        // check if there is an open right side
-        if($x+1 < $size && $board->array_board[$x+1][$y]==0){
-            $count+=1;
-        }
-        //CHECK OPEN SPACE VERTICALLY
-        if($y>0 && $board->array_board[$x][$y-1] == 0){
-            $count+=1;
-        }
-        if($y+1 < $size && $board->array_board[$x][$y+1] == 0){
-            $count+=1;
+        $size = $board->get_size();
+        // possible directions
+        $directions = [
+            [-1, 0],  // left
+            [1, 0],   // right
+            [0, -1],  // up
+            [0, 1],   // down
+            [-1, -1], // up-left
+            [-1, 1],  // up-right
+            [1, -1],  // down-left
+            [1, 1]    // down-right
+        ];
+        // count connected pieces for each direction
+        foreach ($directions as [$dx, $dy]) {
+            $new_x = $x + $dx;
+            $new_y = $y + $dy;
+            // keep counting connected pieces of same type
+            if ($board->in_bounds($new_x) && $board->in_bounds($new_y) && $board->array_board[$new_x][$new_y] == 0) {
+                $count++;
+                $new_x += $dx;
+                $new_y += $dy;
+            }
         }
         return $count;
     }
-    
-    // offensive function
-    function play_smart($total_cords){
+
+    // offensive function 
+    function play_smart($total_cords) {
         $board = $this->board;
         $size = $board->get_size();
-        // get a random first cord
-        if ($total_cords === array()){
-            return array(random_int(0, $size -1), random_int(0, $size -1));
+        // return random coordinates if no cords are given
+        if (empty($total_cords)) {
+            return [random_int(0, $size - 1), random_int(0, $size - 1)];
         }
-        $cord_weights = array();
-        // weighted dictionary
+        $cord_weights = [];
+        // build weighted dictionary, weight is total connected
         foreach ($total_cords as $cords) {
-            $key = $cords[0] . ',' . $cords[1]; 
-            $cord_weights[$key] = $this->count_around($cords[0], $cords[1]); 
+            $key = "{$cords[0]},{$cords[1]}";
+            $cord_weights[$key] = $this->count_connected($cords[0], $cords[1]);
         }
-        // split cords into x and y
-        $maxi = max($cord_weights);
-        $largest_cords = explode(',',array_search(max($cord_weights), $cord_weights));
-        $x = $largest_cords[0];
-        $y = $largest_cords[1];
-        // place priority cords in new spot that aren't empty
-        do {
-            if($x>0 && $board->array_board[$x-1][$y] == 0){
-                return [$x-1,$y];
+        // cords with most connected pieces
+        $max_key = array_search(max($cord_weights), $cord_weights);
+        [$x, $y] = explode(',', $max_key);
+        // directions for new spot
+        $directions = [
+            [-1, 0], // up
+            [1, 0],  // down
+            [0, -1], // left
+            [0, 1],  // right
+            [-1, -1], // up-left
+            [-1, 1],  // up-right
+            [1, -1],  // down-left
+            [1, 1]    // down-right
+        ];
+        // find first available spot
+        foreach ($directions as [$dx, $dy]) {
+            $new_x = $x + $dx;
+            $new_y = $y + $dy;
+            // return when can fill an empty
+            if ($board->in_bounds($new_x) && $board->in_bounds($new_y) && $board->array_board[$new_x][$new_y] == 0) {
+                return [$new_x, $new_y];
             }
-            // check if there is an open right side
-            if($x+1 < $size && $board->array_board[$x+1][$y]==0){
-                return [$x+1,$y];
-            }
-            //CHECK OPEN SPACE VERTICALLY
-            if($y>0 && $board->array_board[$x][$y-1] == 0){
-                return [$x,$y-1];
-            }
-            if($y+1 < $size && $board->array_board[$x][$y+1] == 0){
-                return [$x,$y+1];
-            }
-        } while($board->is_empty($x,$y));
-        
+        }
     }
 }
 ?>

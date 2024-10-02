@@ -18,8 +18,8 @@ class Board{
     }
 
     // return if cord is out of bounds
-    function is_oob($cord){
-        return ($cord >= $this->size) || ($cord < 0);
+    function in_bounds($cord){
+        return ($cord < $this->size) && ($cord >= 0);
     }
 
     //helper method traverse through the array and note all the empty spots and return the array

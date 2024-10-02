@@ -13,11 +13,11 @@ class Piece {
         $reason = null;
         $cord = null;
         // check if x is valid
-        if ($this->board->is_oob($x)) {
+        if (!($this->board->in_bounds($x))) {
             $reason = 'x';
             $cord = $x;
         // check if y is valid
-        } else if ($this->board->is_oob($y)) {
+        } else if (!($this->board->in_bounds($y))) {
             $reason = 'y';
             $cord = $y;
         }
