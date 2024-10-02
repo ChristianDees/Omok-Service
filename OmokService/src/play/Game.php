@@ -73,8 +73,21 @@ class Game {
     }
 
     function is_draw() {
-        // Check if draw occurred (all pieces filled and no one has won)
-        return false;
+        $board = $this->board;
+        $size = $board->get_size();
+        
+        for($x=0;$x<$size;$x++){
+            for($y=0;$y<$size;$y++){
+                if($board->is_empty($x, $y)){
+                    return false; // spaces are still empty, game hasn't ended
+                }
+            }
+        }
+        
+        if(!$this->is_win(1)['win'] && !$this->is_win(2)['win'] ){
+            return true; // spaces are filled no one won, it's a draw
+        }
+        return false; // not a draw, none of the players won
     }
 }
 ?>
