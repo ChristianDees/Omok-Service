@@ -119,15 +119,52 @@ class SmartStrategy extends MoveStrategy{
                     return [$x+1,$y];
                 }
                 //CHECK OPEN SPACE VERTICALLY
+                
+                //check if there is an open space on top
                 if($y>0 && $board->array_board[$x][$y-1] == 0){
                     return [$x,$y-1];
                 }
+                
+                //check if there is an open space on the bottom
                 if($y+1 < $size && $board->array_board[$x][$y+1] == 0){
                     return [$x,$y+1];
                 }
                 
+                // CHECK OPEN SPACE DIAGONALLY
+                
+                // check top-left corner for open space
+                
+                if($x>0 && $y>0 && $board->array_board[$x-1][$y-1]==0){
+                    return [$x-1,$y-1];
+                }
+                
+                // check bottom-right corner for open space
+                
+                if($x+1<$size && $y+1<size && $board->array_board[$x+1][$y+1]==0){
+                    return [$x+1,$y+1];
+                }
+                
+                
+                // check top-right corner for open space
+                
+                if($x+1 < $size && $y>0 && $board->array_board[$x+1][$y-1] == 0){
+                    return [$x+1, $y-1];
+                }
+                
+                
+                // check botton-left corner for open space
+                
+                if($x>0 && $y+1 < $size && $board->array_board[$x-1][$y+1]==0){
+                    return [$x-1,$y+1];
+                    
+                }
+                
             }
         }
+        
+        return null; // no open space was found
+        
+
 
         
     }
