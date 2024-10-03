@@ -1,4 +1,5 @@
 <?php
+// Authors: Christian Dees & Aitiana Mondragon
 
 require_once "Board.php";
 require_once "MoveStrategy.php";
