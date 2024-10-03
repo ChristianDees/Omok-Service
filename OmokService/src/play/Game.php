@@ -70,10 +70,8 @@ class Game {
         // check if a draw has occured, if so return a list [draw, won, plyr_row, sys_row]
         $player_win_info = $this->win_info(2);
         $sys_win_info = $this->win_info(1);
-        $draw = false;
-        $won = false;
-        $draw = $player_win_info[0] && $sys_win_info[0] ? true : false;
-        $won = $player_win_info[0] || $sys_win_info[0] ? true : false;
+        $draw = $player_win_info[0] && $sys_win_info[0];
+        $won = $player_win_info[0] ^ $sys_win_info[0];
         return [$draw, $won, $player_win_info[1], $sys_win_info[1]];
     }
 }
