@@ -4,7 +4,7 @@ require_once 'MoveStrategy.php';
 
 class RandomStrategy extends MoveStrategy{
     
-    function pickPlace(){
+    function pick_place(){
         $board = $this->board;
         
         // random selection process
