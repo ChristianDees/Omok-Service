@@ -1,5 +1,7 @@
 <?php
 
+// Authors: Christian Dees & Aitiana Mondragon
+
 class Game {
     public $board;
     public $strategy;
