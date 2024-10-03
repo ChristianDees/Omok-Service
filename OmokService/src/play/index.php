@@ -1,4 +1,7 @@
 <?php // index.php
+
+// Authors: Christian Dees & Aitiana Mondragon
+
 // inmport files
 ob_start();
 require_once '../new/index.php';
