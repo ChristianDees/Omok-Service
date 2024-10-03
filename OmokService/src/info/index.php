@@ -1,4 +1,7 @@
 <?php
+
+// Authors: Christian Dees & Aitiana Mondragon
+
 define('SIZE',15);
 $strategies = array('Smart' => 'SmartStrategy', 'Random' => 'RandomStrategy');
 // create a structure: a class or an array (of key-value pairs)
