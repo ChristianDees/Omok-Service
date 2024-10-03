@@ -1,4 +1,7 @@
 <?php
+
+// Authors: Christian Dees & Aitiana Mondragon
+
 class Board{
     
     public $size;
