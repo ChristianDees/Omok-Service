@@ -1,4 +1,7 @@
 <?php
+
+// Authors: Christian Dees & Aitiana Mondragon
+
 class Piece {
     public $board;
     public $piece_type;
