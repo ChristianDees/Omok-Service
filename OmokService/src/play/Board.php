@@ -9,10 +9,12 @@ class Board{
         $this->array_board = array_fill(0,$size,array_fill(0,$size,0));
     }
     
+    // return board size
     function get_size(){
         return $this->size;
     }
     
+    // return if a cord is empty
     function is_empty($x,$y){
         return ($this->array_board[$x][$y] == 0) && ($x >= 0 && $x < $this->size) && ($y >= 0 && $y < $this->size);
     }
@@ -37,38 +39,6 @@ class Board{
         }
         return $empty_spots; // returns the array of empty spots
     }
-    
-
-    // Generative AI: temporary display table 
-    function display() {
-        echo "<table style='border-collapse: collapse;'>";
-        echo "<tr><td style='border: 1px solid black;'></td>"; 
-        for ($y = 0; $y < $this->size; $y++) {
-            echo "<td style='border: 1px solid black; padding: 10px; text-align: center;'>" . $y . "</td>";
-        }
-        echo "</tr>";
-        for ($x = 0; $x < $this->size; $x++) {
-            echo "<tr>"; 
-            echo "<td style='border: 1px solid black; padding: 10px; text-align: center;'>" . $x . "</td>"; 
-            for ($y = 0; $y < $this->size; $y++) {
-                $value = $this->array_board[$x][$y];
-                $color = '';
-    
-                // Set the background color based on the value
-                if ($value == 1) {
-                    $color = 'background-color: lightcoral;';
-                } elseif ($value == 2) {
-                    $color = 'background-color: lightblue;';
-                }
-    
-                echo "<td style='border: 1px solid black; padding: 10px; text-align: center; $color'>" . $value . "</td>";
-            }
-            echo "</tr>"; 
-        }
-        echo "</table>"; 
-    }
-    
-    
 
     // board metadata to json
     function to_json() {

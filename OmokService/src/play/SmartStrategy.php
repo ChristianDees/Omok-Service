@@ -17,6 +17,10 @@ class SmartStrategy extends MoveStrategy{
                 }
             }
         }
+        $empty_spaces = $board->find_empty_spots();
+        if ($empty_spaces === null){
+            return null;
+        }
         // checks if can win
         $win_place = $this->check_open_end(1);
         if($win_place !== null){
@@ -119,17 +123,16 @@ class SmartStrategy extends MoveStrategy{
         foreach ($directions as [$dx, $dy]) {
             $new_x = $x + $dx;
             $new_y = $y + $dy;
-            // keep counting connected pieces of same type
-            if ($board->in_bounds($new_x) && $board->in_bounds($new_y) && $board->array_board[$new_x][$new_y] == 0) {
+            while ($board->in_bounds($new_x) && $board->in_bounds($new_y) && $board->array_board[$new_x][$new_y] == 1) {
                 $count++;
                 $new_x += $dx;
                 $new_y += $dy;
             }
-        }
+        }        
         return $count;
     }
 
-    // offensive function 
+    // offense
     function play_smart($total_cords) {
         $board = $this->board;
         $size = $board->get_size();
@@ -138,15 +141,13 @@ class SmartStrategy extends MoveStrategy{
             return [random_int(0, $size - 1), random_int(0, $size - 1)];
         }
         $cord_weights = [];
-        // build weighted dictionary, weight is total connected
         foreach ($total_cords as $cords) {
             $key = "{$cords[0]},{$cords[1]}";
             $cord_weights[$key] = $this->count_connected($cords[0], $cords[1]);
         }
-        // cords with most connected pieces
-        $max_key = array_search(max($cord_weights), $cord_weights);
-        [$x, $y] = explode(',', $max_key);
-        // directions for new spot
+        // sort cords by weight
+        arsort($cord_weights);
+        // directions 
         $directions = [
             [-1, 0],  // up
             [1, 0],   // down
@@ -157,15 +158,31 @@ class SmartStrategy extends MoveStrategy{
             [1, -1],  // down-left
             [1, 1]    // down-right
         ];
-        // find first available spot
-        foreach ($directions as [$dx, $dy]) {
-            $new_x = $x + $dx;
-            $new_y = $y + $dy;
-            // return when can fill an empty
-            if ($board->in_bounds($new_x) && $board->in_bounds($new_y) && $board->array_board[$new_x][$new_y] == 0) {
-                return [$new_x, $new_y];
+        // check each prioritized coordinate
+        foreach (array_keys($cord_weights) as $key) {
+            [$x, $y] = explode(',', $key);
+            // check for available spots around (x, y)
+            foreach ($directions as [$dx, $dy]) {
+                $new_x = $x + $dx;
+                $new_y = $y + $dy;
+                // if the new position is within bounds and empty
+                if ($board->in_bounds($new_x) && $board->in_bounds($new_y) && $board->array_board[$new_x][$new_y] == 0) {
+                    return [$new_x, $new_y];
+                }
             }
         }
+        // if no spots were found, return a random position as a fallback
+        $fallback_cords = [random_int(0, $size - 1), random_int(0, $size - 1)];
+        $empty_spots = $board->find_empty_spots();
+        $exists = in_array($fallback_cords, $empty_spots, true);
+        do{
+            $fallback_cords = [random_int(0, $size - 1), random_int(0, $size - 1)]; 
+            $exists = in_array($fallback_cords, $empty_spots, true);
+        }
+        while(!$exists);
+        return $fallback_cords;
     }
+    
+    
 }
 ?>

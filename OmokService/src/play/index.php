@@ -14,7 +14,6 @@ define('YCORD', 'y');
 // grab url input
 $input = $_GET;
 $response = [];
-$game = null; //DELETE LATER
 $pid_entered = array_key_exists(PID, $input);
 if ($pid_entered) {
     // check pid existance
@@ -36,54 +35,64 @@ if ($pid_entered) {
                 $usr_piece = new Piece(2, $game->board);
                 // grab response if invalid cords
                 $response = $usr_piece->place($input[XCORD], $input[YCORD]);
-                if (!$response){
-                    // system's move
-                    $sys_cords = $game->strategy->pick_place();
-                    if ($sys_cords) {
-                        $sys_piece->place($sys_cords[0], $sys_cords[1]);
-                        // win/draw check & row assignment
-                        $draw_info = $game->draw_info();
-                        $win_info = $game->win_info(); 
-                        $winner = $win_info[0] ?? 0;
-                        $plyr_win_row = array();
-                        $sys_win_row =  array();
-                        $won = $win_info ? true:false;
-                        $draw = $draw_info ? true:false;
-                        if ($draw_info){
-                            $plyr_win_row = $draw_info[0];
-                            $sys_win_row = $draw_info[1];
-                        } else if ($winner == 1){
-                            $sys_win_row = $win_info[1]; 
-                        } else if ($winner == 2) {
-                            $plyr_win_row = $win_info[1];
-                        } 
-                        // setup responses
-                        $player_response = [
-                            "ack_move" => [
+                if (!$response) {
+                    // if successfully moved player piece
+                    [$draw, $won, $plyr_win_row, $sys_win_row] = $game->game_status();
+                    $player_won = $won && $plyr_win_row;
+                    $sys_won = $won && $sys_win_row;
+                    $sys_cords = [];
+                    if (!($draw || $won)) {
+                        // continue with system move
+                        $sys_cords = $game->strategy->pick_place();
+                        if ($sys_cords) {
+                            $response = $sys_piece->place($sys_cords[0], $sys_cords[1]);
+                            if (!$response) {
+                                $sys_won = $game->win_info(1)[0];
+                                [$draw, $won, $plyr_win_row, $sys_win_row] = $game->game_status();
+                                $player_won = $won && $plyr_win_row;
+                                $sys_won = $won && $sys_win_row;
+                            }
+                        } else {
+                            $response = array("response" => false, "reason" => "There are no more empty spots left on the board.");
+                        }
+                    }
+                    // setup player response
+                    $player_response = [
+                        "ack_move" => [
                             "x" => (int)$input[XCORD],
                             "y" => (int)$input[YCORD],
-                            "isWin" => $won,
+                            "isWin" => $player_won,
                             "isDraw" => $draw,
                             "row" => $plyr_win_row 
-                            ]
-                        ];
+                        ]
+                    ];
+                    // setup system response
+                    if (!empty($sys_cords)) {
                         $sys_response = [
                             "move" => [
-                            "x" => (int)$sys_cords[0],
-                            "y" => (int)$sys_cords[1],
-                            "isWin" => $won,
-                            "isDraw" => $draw,
-                            "row" => $sys_win_row 
+                                "x" => (int)$sys_cords[0],
+                                "y" => (int)$sys_cords[1],
+                                "isWin" => $sys_won,
+                                "isDraw" => $draw,
+                                "row" => $sys_win_row 
                             ]
                         ];
-                        // remove necesarry winners row from response
-                        $winner == 1 ? $player_response = null : ($winner == 2 ? $sys_response = null:null);
-                        // formulate final response 
-                        $response = array_merge(["response" => true], $player_response ?? [], $sys_response ?? []);
+                    } else {
+                        $sys_response = [];
+                    }
+                    // formulate final response 
+                    if (!$response){
+                        $response = array_merge(["response" => true], $player_response, $sys_response);
+                    }
+                    if ($won || $draw){
+                        // remove game file and pid from pids.json
+                        unlink($game_file);
+                        $pid_idx = array_search($pid, $pids);
+                        unset($pids[$pid_idx]);
+                        file_put_contents(PIDS_FILE, json_encode($pids));
+                    } else {
                         // save game state
                         file_put_contents($game_file, $game->to_json());
-                    } else {
-                        return array("response" => false, "reason" => "There are no more empty spots left on the board.");
                     }
                 }
             } else {
@@ -99,8 +108,4 @@ if ($pid_entered) {
     $response = array("response" => $pid_entered, "reason" => "Pid not specified");
 }
 echo json_encode($response);
-// DELETE THIS FOR SERVER
-if ($game){
-    $game->board->display();
-}
 ?>
