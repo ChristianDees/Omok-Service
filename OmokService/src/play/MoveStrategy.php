@@ -1,4 +1,7 @@
 <?php
+
+// Authors: Christian Dees & Aitiana Mondragon, but modified from Dr. Cheon
+
 abstract class MoveStrategy {
     protected $board;
 
