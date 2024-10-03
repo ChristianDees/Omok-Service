@@ -1,4 +1,7 @@
 <?php // index.php
+
+// Authors: Christian Dees & Aitiana Mondragon
+
 require_once "../play/Game.php";
 require_once "../play/Board.php";
 require_once "../play/Piece.php";
